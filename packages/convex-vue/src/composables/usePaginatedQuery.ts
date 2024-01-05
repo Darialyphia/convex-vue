@@ -37,14 +37,21 @@ export const useConvexPaginatedQuery = <T>(
   args: MaybeRefOrGetter<FunctionArgs<PaginatedQueryReference<T>>>,
   options: { numItems: number }
 ) => {
+  type PageType = FunctionReturnType<PaginatedQueryReference<T>>;
   const client = useConvex();
   const subscribers = ref<(() => void)[]>([]);
 
-  const pages = ref<FunctionReturnType<PaginatedQueryReference<T>>[]>([]);
+  const pages = ref<PageType[]>([]);
   const isDone = ref(false);
   const error = ref<Nullable<Error>>();
-
   const lastPage = computed(() => pages.value.at(-1));
+
+  let resolve: (data: PageType["page"][]) => void;
+  let reject: (err: Error) => void;
+  const suspensePromise = new Promise<PageType["page"][]>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
 
   const reset = (refetch: Boolean) => {
     subscribers.value.forEach((unsub) => unsub());
@@ -67,13 +74,16 @@ export const useConvexPaginatedQuery = <T>(
         },
       },
       (newPage) => {
-        // @ts-expect-error some ref related vue types going full  ham here
+        // @ts-expect-error some weird erors because of vue's ref unwrapping types makiing the compiler freak out
         pages.value[index] = newPage;
+        // @ts-expect-error some weird erors because of vue's ref unwrapping types makiing the compiler freak out
+        resolve(pages.value.map((p) => p.page));
         error.value = undefined;
         isDone.value = newPage.isDone;
       },
       (err) => {
         error.value = err;
+        reject(err);
         if (isRecoverableError(err)) {
           reset(false);
         }
@@ -93,6 +103,7 @@ export const useConvexPaginatedQuery = <T>(
   loadPage(0);
 
   return {
+    suspense: () => suspensePromise,
     pages: computed(() => pages.value.map((p) => p.page)),
     data: computed(() => pages.value.flatMap((p) => p.page)),
     lastPage,

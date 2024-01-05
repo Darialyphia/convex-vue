@@ -33,6 +33,13 @@ export const useConvexQuery = <Query extends QueryReference>(
   let unsub: () => void;
   const isEnabled = computed(() => unref(options.enabled) ?? true);
 
+  let resolve: (data: FunctionReturnType<Query>) => void;
+  let reject: (err: Error) => void;
+  const suspensePromise = new Promise<FunctionReturnType<Query>>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
   const bind = () => {
     unsub?.();
     if (isEnabled.value) {
@@ -41,10 +48,12 @@ export const useConvexQuery = <Query extends QueryReference>(
         toValue(args),
         (newData) => {
           data.value = newData;
+          resolve?.(newData);
           error.value = null;
         },
         (err) => {
           data.value = null;
+          reject(err);
           error.value = err;
         }
       );
@@ -53,5 +62,10 @@ export const useConvexQuery = <Query extends QueryReference>(
 
   watch(isEnabled, bind, { immediate: true });
 
-  return { data, error, isLoading: computed(() => data.value === undefined) };
+  return {
+    suspense: () => suspensePromise,
+    data,
+    error,
+    isLoading: computed(() => data.value === undefined),
+  };
 };
