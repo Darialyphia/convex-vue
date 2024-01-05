@@ -7,11 +7,6 @@ export const list = query((ctx) => ctx.db.query("todos").collect());
 export const paginatedList = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
-    // const identity = await ctx.auth.getUserIdentity();
-    // if (!identity) {
-    //   throw new Error("Unauthorized");
-    // }
-
     return (
       ctx.db
         .query("todos")
@@ -32,14 +27,9 @@ export const remove = mutation({
 export const add = mutation({
   args: { text: v.string() },
   handler: async (ctx, { text }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Unauthorized");
-    }
     await ctx.db.insert("todos", {
       text,
       completed: false,
-      userId: identity.subject,
     });
   },
 });

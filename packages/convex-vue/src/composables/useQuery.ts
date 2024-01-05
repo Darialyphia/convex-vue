@@ -19,7 +19,7 @@ export type UseConvexQueryOptions = {
   enabled?: MaybeRef<boolean>;
 };
 
-type QueryReference = FunctionReference<"query">;
+export type QueryReference = FunctionReference<"query">;
 export const useConvexQuery = <Query extends QueryReference>(
   query: Query,
   args: MaybeRefOrGetter<FunctionArgs<Query>>,
@@ -36,10 +36,18 @@ export const useConvexQuery = <Query extends QueryReference>(
   const bind = () => {
     unsub?.();
     if (isEnabled.value) {
-      unsub = client.onUpdate(query, toValue(args), (newData) => {
-        data.value = newData;
-        error.value = undefined;
-      });
+      unsub = client.onUpdate(
+        query,
+        toValue(args),
+        (newData) => {
+          data.value = newData;
+          error.value = null;
+        },
+        (err) => {
+          data.value = null;
+          error.value = err;
+        }
+      );
     }
   };
 
