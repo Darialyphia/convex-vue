@@ -1,28 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { api } from "../convex/_generated/api";
-import { useConvexPaginatedQuery } from "./composables/usePaginatedQuery";
 import { useConvexMutation } from "./composables/useMutation";
 import ConvexQuery from "./components/ConvexQuery.vue";
-
-const {
-  suspense,
-  data: todos,
-  loadMore,
-  isDone,
-  reset,
-} = useConvexPaginatedQuery(
-  api.todos.paginatedList,
-  {
-    paginationOpts: {
-      numItems: 5,
-      cursor: null,
-    },
-  },
-  {
-    numItems: 5,
-  }
-);
+import ConvexPaginatedQuery from "./components/ConvexPaginatedQuery.vue";
 
 const todo = ref("");
 
@@ -33,8 +14,6 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
     inputRef.value?.focus();
   },
 });
-
-await suspense();
 
 const isConvexComponentDisplayed = ref(false);
 const convexComponentArgs = ref({
@@ -67,12 +46,27 @@ const convexComponentArgs = ref({
     </template>
   </ConvexQuery>
 
-  <h2>Using usePaginatedQuery component</h2>
-  <ul>
-    <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
-  </ul>
-  <button :disabled="isDone" @click="loadMore">Load more</button>
-  <button @click="reset">Reset</button>
+  <h2>Using PaginatedQuery component</h2>
+  <ConvexPaginatedQuery
+    :query="api.todos.paginatedList"
+    :args="{}"
+    :options="{ numItems: 5 }"
+    suspense
+  >
+    <template #loading>Loading todos...</template>
+    <template #error="{ error }">Error: {{ error.message }}</template>
+    <template
+      #default="{ data: todos, isDone, loadMore, isLoadingMore, reset }"
+    >
+      <ul>
+        <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
+      </ul>
+      <p v-if="isLoadingMore">Loading next page...</p>
+      <button :disabled="isDone" @click="loadMore">Load more</button>
+      <button @click="reset">Reset</button>
+    </template>
+  </ConvexPaginatedQuery>
+
   <form
     @submit.prevent="
       () => {
