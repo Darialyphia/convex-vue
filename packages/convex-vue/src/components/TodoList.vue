@@ -1,38 +1,34 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { api } from "@api";
-import { useConvexMutation } from "@/composables/useMutation";
-import ConvexQuery from "./convex/ConvexQuery.vue";
-import ConvexPaginatedQuery from "./convex/ConvexPaginatedQuery.vue";
+import { ref } from 'vue';
+import { api } from '@api';
+import { useConvexMutation } from '@/composables/useMutation';
+import ConvexQuery from './convex/ConvexQuery.vue';
+import ConvexPaginatedQuery from './convex/ConvexPaginatedQuery.vue';
 
-const todo = ref("");
+const todo = ref('');
 
 const inputRef = ref<HTMLInputElement>();
 const { mutate: addTodo } = useConvexMutation(api.todos.add, {
   onSuccess() {
-    todo.value = "";
+    todo.value = '';
     inputRef.value?.focus();
-  },
+  }
 });
 
 const isConvexComponentDisplayed = ref(false);
 const convexComponentArgs = ref({
-  forceError: false,
+  forceError: false
 });
 </script>
 
 <template>
-  <h1>convex-vue</h1>
   <h2>Using ConvexQuery component</h2>
   <label>
-    <input type="checkbox" v-model="convexComponentArgs.forceError" />Force
-    query error
+    <input type="checkbox" v-model="convexComponentArgs.forceError" />
+    Force query error
   </label>
   <pre>{{ convexComponentArgs }}</pre>
-  <button
-    v-if="!isConvexComponentDisplayed"
-    @click="isConvexComponentDisplayed = true"
-  >
+  <button v-if="!isConvexComponentDisplayed" @click="isConvexComponentDisplayed = true">
     Toggle component
   </button>
 
@@ -55,9 +51,7 @@ const convexComponentArgs = ref({
   >
     <template #loading>Loading todos...</template>
     <template #error="{ error }">Error: {{ error.message }}</template>
-    <template
-      #default="{ data: todos, isDone, loadMore, isLoadingMore, reset }"
-    >
+    <template #default="{ data: todos, isDone, loadMore, isLoadingMore, reset }">
       <ul>
         <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
       </ul>
@@ -89,6 +83,10 @@ form {
 
 input {
   padding: 0.5rem;
+}
+
+button {
+  color: var(--text-1);
 }
 </style>
 ./composables/composables
