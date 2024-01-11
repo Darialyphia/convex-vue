@@ -6,8 +6,8 @@ import {
   FunctionReturnType,
   getFunctionName,
 } from "convex/server";
-import { MaybeRefOrGetter, ref, computed, toValue, watch } from "vue";
-import { Prettify, DistributiveOmit, Nullable } from "../types";
+import { MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from "vue";
+import { Prettify, DistributiveOmit, Nullable } from "@/types";
 import { useConvex } from "./useConvex";
 
 export type PaginatedQueryReference<T> = FunctionReference<
@@ -32,9 +32,10 @@ const isRecoverableError = (err: Error) => {
   );
 };
 
+export type UseConvexPaginatedQueryOptions = { numItems: number };
 export const useConvexPaginatedQuery = <T>(
   query: PaginatedQueryReference<T>,
-  args: MaybeRefOrGetter<FunctionArgs<PaginatedQueryReference<T>>>,
+  args: MaybeRefOrGetter<PaginatedQueryArgs<T, PaginatedQueryReference<T>>>,
   options: { numItems: number }
 ) => {
   type PageType = FunctionReturnType<PaginatedQueryReference<T>>;
@@ -44,7 +45,10 @@ export const useConvexPaginatedQuery = <T>(
   const pages = ref<PageType[]>([]);
   const isDone = ref(false);
   const error = ref<Nullable<Error>>();
-  const lastPage = computed(() => pages.value.at(-1));
+  const lastPage = computed(() => {
+    return pages.value.at(-1);
+  });
+  const isLoadingMore = ref(false);
 
   let resolve: (data: PageType["page"][]) => void;
   let reject: (err: Error) => void;
@@ -55,15 +59,20 @@ export const useConvexPaginatedQuery = <T>(
 
   const reset = (refetch: Boolean) => {
     subscribers.value.forEach((unsub) => unsub());
+    subscribers.value = [];
     pages.value = [];
     if (refetch) {
-      loadPage(0);
+      nextTick(() => {
+        loadPage(0);
+      });
     }
   };
 
   const loadPage = (index: number) => {
     subscribers.value[index]?.();
-
+    if (pages.value.length) {
+      isLoadingMore.value = true;
+    }
     subscribers.value[index] = client.onUpdate(
       query,
       {
@@ -80,9 +89,11 @@ export const useConvexPaginatedQuery = <T>(
         resolve(pages.value.map((p) => p.page));
         error.value = undefined;
         isDone.value = newPage.isDone;
+        isLoadingMore.value = false;
       },
       (err) => {
         error.value = err;
+        isLoadingMore.value = false;
         reject(err);
         if (isRecoverableError(err)) {
           reset(false);
@@ -105,16 +116,12 @@ export const useConvexPaginatedQuery = <T>(
   return {
     suspense: () => suspensePromise,
     pages: computed(() => pages.value.map((p) => p.page)),
-    data: computed(() => pages.value.flatMap((p) => p.page)),
+    data: computed(() => pages.value.filter((p) => !!p).flatMap((p) => p.page)),
     lastPage,
     error,
     isDone,
-    isLoading: computed(
-      () => pages.value.length <= 1 && lastPage.value === undefined
-    ),
-    isLoadingMore: computed(
-      () => pages.value.length > 1 && lastPage.value === undefined
-    ),
+    isLoading: computed(() => !pages.value.length),
+    isLoadingMore,
     loadMore: () => loadPage(pages.value.length),
     reset: () => reset(true),
   };

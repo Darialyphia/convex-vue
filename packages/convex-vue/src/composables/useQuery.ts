@@ -12,7 +12,7 @@ import {
   toValue,
   watch,
 } from "vue";
-import { Nullable } from "../types";
+import { Nullable } from "@/types";
 import { useConvex } from "./useConvex";
 
 export type UseConvexQueryOptions = {
@@ -61,6 +61,7 @@ export const useConvexQuery = <Query extends QueryReference>(
   };
 
   watch(isEnabled, bind, { immediate: true });
+  watch(() => toValue(args), bind, { deep: true });
 
   return {
     suspense: () => suspensePromise,

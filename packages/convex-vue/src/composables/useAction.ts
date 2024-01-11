@@ -1,6 +1,6 @@
 import { FunctionReference, FunctionReturnType } from "convex/server";
 import { ref } from "vue";
-import { Nullable } from "../types";
+import { Nullable } from "@/types";
 import { useConvex } from "./useConvex";
 
 export type ActionReference = FunctionReference<"action">;
