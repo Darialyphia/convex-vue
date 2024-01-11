@@ -5,7 +5,7 @@ import {
   PaginatedQueryReference,
   UseConvexPaginatedQueryOptions,
   useConvexPaginatedQuery,
-} from "../composables/usePaginatedQuery";
+} from "@/composables/usePaginatedQuery";
 
 const props = defineProps<{
   query: PaginatedQueryReference<T>;

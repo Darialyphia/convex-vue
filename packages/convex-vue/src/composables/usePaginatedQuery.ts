@@ -7,7 +7,7 @@ import {
   getFunctionName,
 } from "convex/server";
 import { MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from "vue";
-import { Prettify, DistributiveOmit, Nullable } from "../types";
+import { Prettify, DistributiveOmit, Nullable } from "@/types";
 import { useConvex } from "./useConvex";
 
 export type PaginatedQueryReference<T> = FunctionReference<

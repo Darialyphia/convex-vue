@@ -5,7 +5,7 @@ import {
   QueryReference,
   UseConvexQueryOptions,
   useConvexQuery,
-} from "../composables/useQuery";
+} from "@/composables/useQuery";
 
 const props = defineProps<{
   query: Query;

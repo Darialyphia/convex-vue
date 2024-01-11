@@ -12,8 +12,11 @@
   },
   "dependencies": {
     "@types/node": "^20.10.6",
+    "@vueuse/core": "^10.7.1",
     "convex": "^1.7.1",
-    "vue": "^3.3.11"
+    "unplugin-vue-router": "^0.7.0",
+    "vue": "^3.3.11",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { api } from "../convex/_generated/api";
-import { useConvexMutation } from "./composables/useMutation";
-import ConvexQuery from "./components/ConvexQuery.vue";
-import ConvexPaginatedQuery from "./components/ConvexPaginatedQuery.vue";
+import { api } from "@api";
+import { useConvexMutation } from "@/composables/useMutation";
+import ConvexQuery from "./convex/ConvexQuery.vue";
+import ConvexPaginatedQuery from "./convex/ConvexPaginatedQuery.vue";
 
 const todo = ref("");
 
