@@ -1,4 +1,4 @@
-import { FunctionPlugin, InjectionKey, Ref, readonly, watch } from "vue";
+import { FunctionPlugin, InjectionKey, Ref, watch } from "vue";
 import { ConvexClient, type ConvexClientOptions } from "convex/browser";
 import { RouteLocationNormalized, RouteLocationRaw } from "vue-router";
 import { Nullable } from "./types";
