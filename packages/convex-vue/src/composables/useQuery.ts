@@ -43,7 +43,6 @@ export const useConvexQuery = <Query extends QueryReference>(
   const bind = () => {
     unsub?.();
     if (isEnabled.value) {
-      console.log(toValue(args));
       unsub = client.onUpdate(
         query,
         toValue(args),
