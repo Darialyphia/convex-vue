@@ -43,6 +43,7 @@ export const useConvexQuery = <Query extends QueryReference>(
   const bind = () => {
     unsub?.();
     if (isEnabled.value) {
+      console.log(toValue(args));
       unsub = client.onUpdate(
         query,
         toValue(args),
@@ -61,6 +62,7 @@ export const useConvexQuery = <Query extends QueryReference>(
   };
 
   watch(isEnabled, bind, { immediate: true });
+  watch(() => toValue(args), bind, { deep: true });
 
   return {
     suspense: () => suspensePromise,

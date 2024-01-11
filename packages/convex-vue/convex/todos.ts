@@ -2,7 +2,17 @@ import { paginationOptsValidator } from "convex/server";
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-export const list = query((ctx) => ctx.db.query("todos").collect());
+export const list = query({
+  args: {
+    forceError: v.optional(v.boolean()),
+  },
+  handler: (ctx, args) => {
+    if (args.forceError) {
+      throw new Error("forced error !");
+    }
+    return ctx.db.query("todos").collect();
+  },
+});
 
 export const paginatedList = query({
   args: { paginationOpts: paginationOptsValidator },

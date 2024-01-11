@@ -3,9 +3,8 @@ import { ref } from "vue";
 import { api } from "../convex/_generated/api";
 import { useConvexPaginatedQuery } from "./composables/usePaginatedQuery";
 import { useConvexMutation } from "./composables/useMutation";
-import { useConvexQuery } from "./composables/useQuery";
+import ConvexQuery from "./components/ConvexQuery.vue";
 
-useConvexQuery(api.todos.list, {});
 const {
   suspense,
   data: todos,
@@ -36,9 +35,39 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
 });
 
 await suspense();
+
+const isConvexComponentDisplayed = ref(false);
+const convexComponentArgs = ref({
+  forceError: false,
+});
 </script>
 
 <template>
+  <h1>convex-vue</h1>
+  <h2>Using ConvexQuery component</h2>
+  <label>
+    <input type="checkbox" v-model="convexComponentArgs.forceError" />Force
+    query error
+  </label>
+  <pre>{{ convexComponentArgs }}</pre>
+  <button
+    v-if="!isConvexComponentDisplayed"
+    @click="isConvexComponentDisplayed = true"
+  >
+    Toggle component
+  </button>
+
+  <ConvexQuery v-else :query="api.todos.list" :args="convexComponentArgs">
+    <template #loading>Loading todos...</template>
+    <template #error="{ error }">Error: {{ error.message }}</template>
+    <template #default="{ data: todos }">
+      <ul>
+        <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
+      </ul>
+    </template>
+  </ConvexQuery>
+
+  <h2>Using usePaginatedQuery component</h2>
   <ul>
     <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
   </ul>
