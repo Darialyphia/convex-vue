@@ -1,11 +1,11 @@
 <script setup lang="ts" generic="Query extends QueryReference">
-import { computed, toValue } from "vue";
-import { FunctionArgs } from "convex/server";
+import { computed, toValue } from 'vue';
+import { FunctionArgs } from 'convex/server';
 import {
   QueryReference,
   UseConvexQueryOptions,
-  useConvexQuery,
-} from "@/composables/useQuery";
+  useConvexQuery
+} from '@/composables/useQuery';
 
 const props = defineProps<{
   query: Query;
@@ -17,7 +17,7 @@ const props = defineProps<{
 const slots = defineSlots<{
   default(props: {
     data: Exclude<
-      ReturnType<typeof useConvexQuery<Query>>["data"]["value"],
+      ReturnType<typeof useConvexQuery<Query>>['data']['value'],
       null | undefined
     >;
   }): any;

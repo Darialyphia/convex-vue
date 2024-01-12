@@ -3,17 +3,19 @@ import { ref } from 'vue';
 import { definePage } from 'vue-router/auto';
 import { useConvexMutation } from '@/composables/useMutation';
 import { api } from '@api';
-import ConvexPaginatedQuery from '@/components/convex/ConvexPaginatedQuery.vue';
-import { useRouteLoader } from '@/composables/useRouteLoader';
-import { loaders } from '@/loaders';
+import ConvexPaginatedQuery from '@/components/ConvexPaginatedQuery.vue';
+import ConvexQuery from '@/components/ConvexQuery.vue';
+
+// import { useRouteLoader } from '@/composables/useRouteLoader';
+// import { Loaders } from '../loaders';
 
 definePage({
   name: 'Home'
 });
 
-const {
-  todos: { data: todos, isLoading }
-} = useRouteLoader<typeof loaders.Home>();
+// const {
+//   todos: { data: todos, isLoading }
+// } = useRouteLoader<Loaders['Home']>();
 
 const todo = ref('');
 
@@ -31,11 +33,17 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
     <section>
       <h2>Using route loader</h2>
 
-      <p v-if="isLoading">template #loading>Loading todos...</p>
+      <ConvexQuery :query="api.todos.list" :args="{}">
+        <template #loading>
+          <div>Loading todos...</div>
+        </template>
 
-      <ul>
-        <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
-      </ul>
+        <template #default="{ data: todos }">
+          <ul>
+            <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
+          </ul>
+        </template>
+      </ConvexQuery>
     </section>
 
     <section>

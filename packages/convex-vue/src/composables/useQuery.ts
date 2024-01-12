@@ -2,24 +2,17 @@ import {
   FunctionReference,
   FunctionArgs,
   FunctionReturnType,
-} from "convex/server";
-import {
-  MaybeRef,
-  MaybeRefOrGetter,
-  ref,
-  computed,
-  unref,
-  toValue,
-  watch,
-} from "vue";
-import { Nullable } from "@/types";
-import { useConvex } from "./useConvex";
+  getFunctionName
+} from 'convex/server';
+import { MaybeRef, MaybeRefOrGetter, ref, computed, unref, toValue, watch } from 'vue';
+import { Nullable } from '@/types';
+import { useConvex } from './useConvex';
 
 export type UseConvexQueryOptions = {
   enabled?: MaybeRef<boolean>;
 };
 
-export type QueryReference = FunctionReference<"query">;
+export type QueryReference = FunctionReference<'query'>;
 export const useConvexQuery = <Query extends QueryReference>(
   query: Query,
   args: MaybeRefOrGetter<FunctionArgs<Query>>,
@@ -27,7 +20,9 @@ export const useConvexQuery = <Query extends QueryReference>(
 ) => {
   const client = useConvex();
 
-  const data = ref<FunctionReturnType<Query>>();
+  const data = ref<FunctionReturnType<Query>>(
+    client.client.localQueryResult(getFunctionName(query), toValue(args))
+  );
   const error = ref<Nullable<Error>>();
 
   let unsub: () => void;
@@ -46,12 +41,13 @@ export const useConvexQuery = <Query extends QueryReference>(
       unsub = client.onUpdate(
         query,
         toValue(args),
-        (newData) => {
+        newData => {
           data.value = newData;
           resolve?.(newData);
           error.value = null;
         },
-        (err) => {
+        err => {
+          // @ts-expect-error FIXME
           data.value = null;
           reject(err);
           error.value = err;
@@ -67,6 +63,6 @@ export const useConvexQuery = <Query extends QueryReference>(
     suspense: () => suspensePromise,
     data,
     error,
-    isLoading: computed(() => data.value === undefined),
+    isLoading: computed(() => data.value === undefined)
   };
 };

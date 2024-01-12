@@ -57,6 +57,24 @@ export const createConvexVue = ({
 
       if (routeLoaderMap) {
         app.provide(CONVEX_LOADERS_INJECTION_KEY, routeLoaderMap);
+        const router = app.config.globalProperties.$router;
+
+        router.beforeEach(async (to, from, next) => {
+          if (!from.name) return next();
+
+          to.matched.map(match => {
+            const loader =
+              match.meta.loader ??
+              routeLoaderMap[typeof match.name === 'string' ? match.name : ''];
+
+            if (!loader) return;
+            Object.values(loader).forEach(({ query, args }) => {
+              client.onUpdate(query, args(match), () => {});
+            });
+          });
+
+          next();
+        });
       }
 
       if (!auth) return;

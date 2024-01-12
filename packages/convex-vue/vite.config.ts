@@ -7,7 +7,7 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [
     VueRouter({
-      routesFolder: fileURLToPath(new URL('./src/pages', import.meta.url)),
+      routesFolder: fileURLToPath(new URL('./playground/pages', import.meta.url)),
       dts: './typed-router.d.ts'
     }),
     ,
@@ -32,7 +32,7 @@ export default defineConfig({
       fileName: 'convex-vue'
     },
     rollupOptions: {
-      external: ['vue', '@vueuse/core', 'convex', 'vue-router'],
+      external: ['vue', '@vueuse/core', 'convex/browser', 'convex/server', 'vue-router'],
       output: {
         globals: {
           vue: 'Vue'

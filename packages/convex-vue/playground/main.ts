@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import { createConvexVue } from './plugin';
+import { createConvexVue } from '../src/plugin';
 import { createAuth0 } from '@auth0/auth0-vue';
 import { createRouter, createWebHistory } from 'vue-router/auto';
 import { loaders } from './loaders';

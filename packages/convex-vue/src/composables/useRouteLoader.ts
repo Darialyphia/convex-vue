@@ -10,16 +10,16 @@ type RouteLoaderArgsGetter<Query extends QueryReference> = (
   route: RouteLocationNormalized
 ) => FunctionArgs<Query>;
 
-type QueryAndArgs<Query extends QueryReference> = {
+type RouterDefinition<Query extends QueryReference> = {
   query: Query;
   args: RouteLoaderArgsGetter<Query>;
 };
 
-export type AnyRouteLoader = Record<string, QueryAndArgs<QueryReference>>;
+export type AnyRouteLoader = Record<string, RouterDefinition<QueryReference>>;
 
 export type TypedRouteLoader<T extends AnyRouteLoader> = {
-  [Key in keyof T]: T[Key] extends QueryAndArgs<infer Query>
-    ? QueryAndArgs<Query>
+  [Key in keyof T]: T[Key] extends RouterDefinition<infer Query>
+    ? RouterDefinition<Query>
     : never;
 };
 
@@ -39,7 +39,9 @@ export const loaders = {
 };
 
 export type Infer<T extends TypedRouteLoader<AnyRouteLoader>> = {
-  [Key in keyof T]: ReturnType<typeof useConvexQuery<T[Key]['query']>>;
+  [Key in keyof T]: ReturnType<T[Key]['args']> extends never
+    ? 'Your loader args fucntion returns incorrect arguments'
+    : ReturnType<typeof useConvexQuery<T[Key]['query']>>;
 };
 
 export const useRouteLoader = <
