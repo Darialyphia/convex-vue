@@ -4,8 +4,7 @@ layout: home
 
 hero:
   name: "Convex-vue"
-  text: "Convex integration for Vue and Nuxt"
-  tagline: My great project tagline
+  tagline: "Convex integration for Vue and Nuxt"
   actions:
     - theme: brand
       text: Markdown Examples
@@ -15,11 +14,12 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
+  - title: Composables
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+  - title: Built-in Components
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+  - title: Auth integration
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Vue-router integration
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
-

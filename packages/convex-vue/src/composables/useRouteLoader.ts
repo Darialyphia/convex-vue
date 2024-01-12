@@ -5,6 +5,7 @@ import { inject } from 'vue';
 import { QueryReference, useConvexQuery } from './useQuery';
 import { CONVEX_LOADERS_INJECTION_KEY } from '@/plugin';
 import { api } from '@api';
+import { useConvexPaginatedQuery, PaginatedQueryReference } from './usePaginatedQuery';
 
 type RouteLoaderArgsGetter<Query extends QueryReference> = (
   route: RouteLocationNormalized
@@ -23,6 +24,14 @@ export type TypedRouteLoader<T extends AnyRouteLoader> = {
     : never;
 };
 
+export type Infer<T extends TypedRouteLoader<AnyRouteLoader>> = {
+  [Key in keyof T]: ReturnType<T[Key]['args']> extends never
+    ? 'Your loader args fucntion returns incorrect arguments'
+    : T[Key]['query'] extends PaginatedQueryReference<infer ResultType>
+      ? ReturnType<typeof useConvexPaginatedQuery<ResultType>>
+      : ReturnType<typeof useConvexQuery<T[Key]['query']>>;
+};
+
 export const defineRouteLoader = <T extends AnyRouteLoader>(
   loader: T
 ): TypedRouteLoader<T> => {
@@ -36,12 +45,6 @@ export const loaders = {
       args: () => ({})
     }
   })
-};
-
-export type Infer<T extends TypedRouteLoader<AnyRouteLoader>> = {
-  [Key in keyof T]: ReturnType<T[Key]['args']> extends never
-    ? 'Your loader args fucntion returns incorrect arguments'
-    : ReturnType<typeof useConvexQuery<T[Key]['query']>>;
 };
 
 export const useRouteLoader = <
@@ -62,9 +65,16 @@ export const useRouteLoader = <
   }
 
   return Object.fromEntries(
-    Object.entries(loader).map(([key, value]) => [
-      key,
-      useConvexQuery(value.query, value.args(route))
-    ])
+    Object.entries(loader).map(([key, value]) => {
+      const unwrappedArgs = value.args(route);
+      return [
+        key,
+        unwrappedArgs.paginationOpts
+          ? useConvexPaginatedQuery(value.query, unwrappedArgs, {
+              numItems: unwrappedArgs.paginationOpts.numItems
+            })
+          : useConvexQuery(value.query, unwrappedArgs)
+      ];
+    })
   ) as Infer<T>;
 };

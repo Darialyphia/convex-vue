@@ -49,20 +49,24 @@ const location = window.location;
   place-content: center;
 }
 
-header > * {
-  display: inline-block;
+header {
+  padding-block: var(--size-3);
 
-  &:not(:first-child) {
-    margin-inline-start: var(--size-4);
+  a {
+    color: inherit;
+  }
+
+  & > * {
+    display: inline-block;
+
+    &:not(:first-child) {
+      margin-inline-start: var(--size-4);
+    }
   }
 }
 
 h1 {
   font-size: var(--font-size-4);
-}
-
-header a {
-  color: inherit;
 }
 </style>
 
@@ -83,7 +87,7 @@ header a {
 
 body {
   background-color: var(--surface-1);
-  max-width: var(--size-lg);
+  max-width: var(--size-xl);
   margin-inline: auto;
 }
 

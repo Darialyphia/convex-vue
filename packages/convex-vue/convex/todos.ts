@@ -48,6 +48,7 @@ export const add = mutation({
 export const setCompleted = mutation({
   args: { completed: v.boolean(), id: v.id('todos') },
   handler: async (ctx, { id, completed }) => {
+    console.log(id, completed);
     await ctx.db.patch(id, { completed });
   }
 });

@@ -5,6 +5,7 @@ import { useConvexMutation } from '@/composables/useMutation';
 import { api } from '@api';
 import ConvexPaginatedQuery from '@/components/ConvexPaginatedQuery.vue';
 import ConvexQuery from '@/components/ConvexQuery.vue';
+import Todo from '../Todo.vue';
 
 // import { useRouteLoader } from '@/composables/useRouteLoader';
 // import { Loaders } from '../loaders';
@@ -13,9 +14,7 @@ definePage({
   name: 'Home'
 });
 
-// const {
-//   todos: { data: todos, isLoading }
-// } = useRouteLoader<Loaders['Home']>();
+// const { paginatedTodos } = useRouteLoader<Loaders['Home']>();
 
 const todo = ref('');
 
@@ -34,13 +33,13 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
       <h2>Using route loader</h2>
 
       <ConvexQuery :query="api.todos.list" :args="{}">
-        <template #loading>
-          <div>Loading todos...</div>
-        </template>
+        <template #loading>Loading todos...</template>
 
         <template #default="{ data: todos }">
           <ul>
-            <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
+            <li v-for="todo in todos" :key="todo._id">
+              <Todo :todo="todo" />
+            </li>
           </ul>
         </template>
       </ConvexQuery>
@@ -54,14 +53,18 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
         :options="{ numItems: 5 }"
       >
         <template #loading>Loading todos...</template>
-        <template #error="{ error }">Error: {{ error.message }}</template>
         <template #default="{ data: todos, isDone, loadMore, isLoadingMore, reset }">
           <ul>
-            <li v-for="todo in todos" :key="todo._id">{{ todo.text }}</li>
+            <li v-for="todo in todos" :key="todo._id">
+              <Todo :todo="todo" />
+            </li>
           </ul>
           <p v-if="isLoadingMore">Loading next page...</p>
-          <button :disabled="isDone" @click="loadMore">Load more</button>
-          <button @click="reset">Reset</button>
+
+          <footer>
+            <button :disabled="isDone" @click="loadMore">Load more</button>
+            <button @click="reset">Reset</button>
+          </footer>
         </template>
       </ConvexPaginatedQuery>
     </section>
@@ -101,13 +104,25 @@ input {
 
 button {
   color: var(--text-1);
+}
 
-  & + button {
-    margin-inline-start: var(--size-3);
-  }
+footer {
+  display: flex;
+  gap: var(--size-3);
+  margin-block-start: var(--size-2);
 }
 
 h2 {
   font-size: var(--font-size-3);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+
+  > li li {
+    margin-block: var(--size-2);
+    max-inline-size: 200%;
+  }
 }
 </style>
