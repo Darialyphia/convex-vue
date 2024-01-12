@@ -5,12 +5,16 @@
     "build": "turbo run build",
     "dev": "turbo run dev --concurrency=13",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
     "prettier": "^3.0.3",
-    "turbo": "latest"
+    "turbo": "latest",
+    "vitepress": "^1.0.0-rc.36"
   },
   "workspaces": {
     "packages": [
