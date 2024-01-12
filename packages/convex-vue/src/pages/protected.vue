@@ -10,7 +10,7 @@ definePage({
 <template>
   <EnsureAuthenticated v-slot="{ user }">
     <div>Protected page</div>
-    <pre>{{ user }}</pre>
+    <pre>What's up, {{ user.name }} ?</pre>
   </EnsureAuthenticated>
 </template>
 

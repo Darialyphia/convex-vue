@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useConvexAuth } from './composables/useConvexAuth';
+import ConvexLink from './components/convex/ConvexLink.vue';
 
-const { loginWithRedirect, user, logout } = useAuth0();
-
+const { loginWithRedirect, logout } = useAuth0();
 const { isAuthenticated } = useConvexAuth();
 
 const location = window.location;
@@ -11,13 +11,11 @@ const location = window.location;
 
 <template>
   <header class="container">
-    <h1><RouterLink :to="{ name: 'Home' }">Convex vue demo</RouterLink></h1>
+    <h1><ConvexLink :to="{ name: 'Home' }">Convex vue demo</ConvexLink></h1>
     <button v-if="!isAuthenticated" @click="loginWithRedirect()">Log in</button>
     <template v-else>
       <span>
-        <RouterLink :to="{ name: 'Protected', params: { id: user!.sub! } }">
-          {{ user?.nickname }}
-        </RouterLink>
+        <RouterLink :to="{ name: 'Protected' }">Protected page</RouterLink>
       </span>
       <button @click="logout({ logoutParams: { returnTo: location.origin } })">
         Log out
@@ -39,10 +37,16 @@ const location = window.location;
 </template>
 
 <style scoped>
-header {
-  display: flex;
-  align-items: center;
-  gap: var(--size-4);
+header > * {
+  display: inline-block;
+
+  &:not(:first-child) {
+    margin-inline-start: var(--size-4);
+  }
+}
+
+h1 {
+  font-size: var(--font-size-4);
 }
 
 header a {

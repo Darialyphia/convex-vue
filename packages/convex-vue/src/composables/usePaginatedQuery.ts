@@ -4,31 +4,30 @@ import {
   PaginationResult,
   FunctionArgs,
   FunctionReturnType,
-  getFunctionName,
-} from "convex/server";
-import { MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from "vue";
-import { Prettify, DistributiveOmit, Nullable } from "@/types";
-import { useConvex } from "./useConvex";
+  getFunctionName
+} from 'convex/server';
+import { MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from 'vue';
+import { Prettify, DistributiveOmit, Nullable } from '@/types';
+import { useConvex } from './useConvex';
 
 export type PaginatedQueryReference<T> = FunctionReference<
-  "query",
-  "public",
+  'query',
+  'public',
   { paginationOpts: PaginationOptions },
   PaginationResult<T>
 >;
 
-export type PaginatedQueryArgs<
-  T,
-  Query extends PaginatedQueryReference<T>,
-> = Prettify<DistributiveOmit<FunctionArgs<Query>, "paginationOpts">>;
+export type PaginatedQueryArgs<T, Query extends PaginatedQueryReference<T>> = Prettify<
+  DistributiveOmit<FunctionArgs<Query>, 'paginationOpts'>
+>;
 
 const isRecoverableError = (err: Error) => {
   return (
-    err.message.includes("InvalidCursor") ||
-    err.message.includes("ArrayTooLong") ||
-    err.message.includes("TooManyReads") ||
-    err.message.includes("TooManyDocumentsRead") ||
-    err.message.includes("ReadsTooLarge")
+    err.message.includes('InvalidCursor') ||
+    err.message.includes('ArrayTooLong') ||
+    err.message.includes('TooManyReads') ||
+    err.message.includes('TooManyDocumentsRead') ||
+    err.message.includes('ReadsTooLarge')
   );
 };
 
@@ -50,15 +49,15 @@ export const useConvexPaginatedQuery = <T>(
   });
   const isLoadingMore = ref(false);
 
-  let resolve: (data: PageType["page"][]) => void;
+  let resolve: (data: PageType['page'][]) => void;
   let reject: (err: Error) => void;
-  const suspensePromise = new Promise<PageType["page"][]>((res, rej) => {
+  const suspensePromise = new Promise<PageType['page'][]>((res, rej) => {
     resolve = res;
     reject = rej;
   });
 
   const reset = (refetch: Boolean) => {
-    subscribers.value.forEach((unsub) => unsub());
+    subscribers.value.forEach(unsub => unsub());
     subscribers.value = [];
     pages.value = [];
     if (refetch) {
@@ -79,19 +78,19 @@ export const useConvexPaginatedQuery = <T>(
         ...toValue(args),
         paginationOpts: {
           numItems: options.numItems,
-          cursor: pages.value[index - 1]?.continueCursor ?? null,
-        },
+          cursor: pages.value[index - 1]?.continueCursor ?? null
+        }
       },
-      (newPage) => {
+      newPage => {
         // @ts-expect-error some weird erors because of vue's ref unwrapping types makiing the compiler freak out
         pages.value[index] = newPage;
         // @ts-expect-error some weird erors because of vue's ref unwrapping types makiing the compiler freak out
-        resolve(pages.value.map((p) => p.page));
+        resolve(pages.value.map(p => p.page));
         error.value = undefined;
         isDone.value = newPage.isDone;
         isLoadingMore.value = false;
       },
-      (err) => {
+      err => {
         error.value = err;
         isLoadingMore.value = false;
         reject(err);
@@ -115,14 +114,14 @@ export const useConvexPaginatedQuery = <T>(
 
   return {
     suspense: () => suspensePromise,
-    pages: computed(() => pages.value.map((p) => p.page)),
-    data: computed(() => pages.value.filter((p) => !!p).flatMap((p) => p.page)),
+    pages: computed(() => pages.value.map(p => p.page)),
+    data: computed(() => pages.value.filter(p => !!p).flatMap(p => p.page)),
     lastPage,
     error,
     isDone,
     isLoading: computed(() => !pages.value.length),
     isLoadingMore,
     loadMore: () => loadPage(pages.value.length),
-    reset: () => reset(true),
+    reset: () => reset(true)
   };
 };

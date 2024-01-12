@@ -3,6 +3,11 @@ import App from './App.vue';
 import { createConvexVue } from './plugin';
 import { createAuth0 } from '@auth0/auth0-vue';
 import { createRouter, createWebHistory } from 'vue-router/auto';
+import { loaders } from './loaders';
+
+const router = createRouter({
+  history: createWebHistory()
+});
 
 const auth = createAuth0({
   domain: import.meta.env.VITE_AUTH0_DOMAIN,
@@ -10,10 +15,6 @@ const auth = createAuth0({
   authorizationParams: {
     redirect_uri: window.location.origin
   }
-});
-
-const router = createRouter({
-  history: createWebHistory()
 });
 
 const convexVue = createConvexVue({
@@ -37,7 +38,8 @@ const convexVue = createConvexVue({
     redirectTo: () => ({
       name: 'Home'
     })
-  }
+  },
+  routeLoaderMap: loaders
 });
 
 createApp(App).use(auth).use(router).use(convexVue).mount('#app');

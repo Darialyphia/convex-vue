@@ -3,6 +3,7 @@ import { ConvexClient, type ConvexClientOptions } from 'convex/browser';
 import { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
 import { Nullable } from './types';
 import { until } from '@vueuse/core';
+import { AnyRouteLoader, TypedRouteLoader } from './composables/useRouteLoader';
 
 type NavigationGuardOptions =
   | {
@@ -19,18 +20,23 @@ type NavigationGuardOptions =
       redirectTo?: never;
     };
 
+type RouteLoaderMap = Record<string, TypedRouteLoader<AnyRouteLoader>>;
+
 export type ConvexVuePluginOptions = {
   convexUrl: string;
-  convexOptions?: ConvexClientOptions;
+  clientOptions?: ConvexClientOptions;
   auth?: {
     getToken(opts: { forceRefreshToken: boolean }): Promise<Nullable<string>>;
     isAuthenticated: Ref<boolean>;
     isLoading: Ref<boolean>;
   } & NavigationGuardOptions;
+  routeLoaderMap?: RouteLoaderMap;
 };
 
-export const CONVEX_INJECTION_KEY = Symbol('convexClient') as InjectionKey<ConvexClient>;
-
+export const CONVEX_INJECTION_KEY = Symbol('convex-client') as InjectionKey<ConvexClient>;
+export const CONVEX_LOADERS_INJECTION_KEY = Symbol(
+  'convex-loaders'
+) as InjectionKey<RouteLoaderMap>;
 export const CONVEX_AUTH_INJECTION_KEY = Symbol('convex-auth') as InjectionKey<{
   isAuthenticated: Ref<boolean>;
   isLoading: Ref<boolean>;
@@ -38,15 +44,20 @@ export const CONVEX_AUTH_INJECTION_KEY = Symbol('convex-auth') as InjectionKey<{
 }>;
 
 export const createConvexVue = ({
-  convexOptions,
+  clientOptions,
   convexUrl,
-  auth
+  auth,
+  routeLoaderMap
 }: ConvexVuePluginOptions): Plugin => {
   return {
     install(app) {
-      const client = new ConvexClient(convexUrl, convexOptions);
+      const client = new ConvexClient(convexUrl, clientOptions);
       app.provide(CONVEX_INJECTION_KEY, client);
       app.config.globalProperties.$convex = client;
+
+      if (routeLoaderMap) {
+        app.provide(CONVEX_LOADERS_INJECTION_KEY, routeLoaderMap);
+      }
 
       if (!auth) return;
 
