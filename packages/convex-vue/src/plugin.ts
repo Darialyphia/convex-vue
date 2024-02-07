@@ -1,9 +1,10 @@
 import { InjectionKey, Plugin, Ref, watch } from 'vue';
-import { ConvexClient, type ConvexClientOptions } from 'convex/browser';
+import { type ConvexClientOptions } from 'convex/browser';
 import { RouteLocationNormalized, RouteLocationRaw } from 'vue-router';
 import { Nullable } from './types';
 import { until } from '@vueuse/core';
 import { AnyRouteLoader, TypedRouteLoader } from './composables/useRouteLoader';
+import { ConvexVueClient } from './client';
 
 type NavigationGuardOptions =
   | {
@@ -33,7 +34,9 @@ export type ConvexVuePluginOptions = {
   routeLoaderMap?: RouteLoaderMap;
 };
 
-export const CONVEX_INJECTION_KEY = Symbol('convex-client') as InjectionKey<ConvexClient>;
+export const CONVEX_INJECTION_KEY = Symbol(
+  'convex-client'
+) as InjectionKey<ConvexVueClient>;
 export const CONVEX_LOADERS_INJECTION_KEY = Symbol(
   'convex-loaders'
 ) as InjectionKey<RouteLoaderMap>;
@@ -51,7 +54,7 @@ export const createConvexVue = ({
 }: ConvexVuePluginOptions): Plugin => {
   return {
     install(app) {
-      const client = new ConvexClient(convexUrl, clientOptions);
+      const client = new ConvexVueClient(convexUrl, clientOptions);
       app.provide(CONVEX_INJECTION_KEY, client);
       app.config.globalProperties.$convex = client;
 

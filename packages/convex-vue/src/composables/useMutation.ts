@@ -1,17 +1,20 @@
-import { FunctionReference, FunctionReturnType } from "convex/server";
-import { ref } from "vue";
-import { Nullable } from "@/types";
-import { useConvex } from "./useConvex";
+import { FunctionArgs, FunctionReference, FunctionReturnType } from 'convex/server';
+import { Ref, computed, reactive, ref, toRef, toRefs } from 'vue';
+import { Nullable } from '@/types';
+import { useConvex } from './useConvex';
+import { OptimisticUpdate } from 'convex/browser';
 
-export type MutationReference = FunctionReference<"mutation">;
+export type MutationReference = FunctionReference<'mutation'>;
 export function useConvexMutation<Mutation extends MutationReference>(
   mutation: Mutation,
   {
     onSuccess,
     onError,
+    optimisticUpdate
   }: {
     onSuccess?: (data: FunctionReturnType<Mutation>) => void;
     onError?: (err: Error) => void;
+    optimisticUpdate?: OptimisticUpdate<FunctionArgs<Mutation>>;
   } = {}
 ) {
   const convex = useConvex();
@@ -22,10 +25,10 @@ export function useConvexMutation<Mutation extends MutationReference>(
   return {
     isLoading,
     error,
-    mutate: async (args: Mutation["_args"]) => {
+    mutate: async (args: FunctionArgs<Mutation>) => {
       try {
         isLoading.value = true;
-        const result = await convex.mutation(mutation, args);
+        const result = await convex.mutation(mutation, args, optimisticUpdate);
         onSuccess?.(result);
         return result;
       } catch (err) {
@@ -34,6 +37,6 @@ export function useConvexMutation<Mutation extends MutationReference>(
       } finally {
         isLoading.value = false;
       }
-    },
+    }
   };
 }

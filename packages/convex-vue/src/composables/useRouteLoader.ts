@@ -26,7 +26,7 @@ export type TypedRouteLoader<T extends AnyRouteLoader> = {
 
 export type Infer<T extends TypedRouteLoader<AnyRouteLoader>> = {
   [Key in keyof T]: ReturnType<T[Key]['args']> extends never
-    ? 'Your loader args fucntion returns incorrect arguments'
+    ? 'Your loader args function returns incorrect arguments'
     : T[Key]['query'] extends PaginatedQueryReference<infer ResultType>
       ? ReturnType<typeof useConvexPaginatedQuery<ResultType>>
       : ReturnType<typeof useConvexQuery<T[Key]['query']>>;

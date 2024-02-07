@@ -6,6 +6,7 @@ import { api } from '@api';
 import ConvexPaginatedQuery from '@/components/ConvexPaginatedQuery.vue';
 import ConvexQuery from '@/components/ConvexQuery.vue';
 import Todo from '../Todo.vue';
+import { Id } from '../../convex/_generated/dataModel';
 
 // import { useRouteLoader } from '@/composables/useRouteLoader';
 // import { Loaders } from '../loaders';
@@ -23,6 +24,20 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
   onSuccess() {
     todo.value = '';
     inputRef.value?.focus();
+  },
+  optimisticUpdate(ctx) {
+    const current = ctx.getQuery(api.todos.list, {});
+    if (!current) return;
+
+    ctx.setQuery(api.todos.list, {}, [
+      {
+        _creationTime: Date.now(),
+        _id: 'optimistic_id' as Id<'todos'>,
+        completed: false,
+        text: 'Some dummy text'
+      },
+      ...current
+    ]);
   }
 });
 </script>
