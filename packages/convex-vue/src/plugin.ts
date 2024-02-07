@@ -72,7 +72,9 @@ export const createConvexVue = ({
 
             if (!loader) return;
             Object.values(loader).forEach(({ query, args }) => {
-              client.onUpdate(query, args(match), () => {});
+              const unsub = client.onUpdate(query, args(match), () => {
+                unsub();
+              });
             });
           });
 
