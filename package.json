@@ -1,6 +1,11 @@
 {
   "name": "root",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loicpennequin/convex-vue.git",
+    "directory": "packages/convex-vue"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --concurrency=13",

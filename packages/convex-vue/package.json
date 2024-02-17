@@ -1,7 +1,13 @@
 {
   "name": "@convex-vue/core",
   "version": "0.0.2",
+  "description": "Vue integration for Convex",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loicpennequin/create-v3-app.git",
+    "directory": "packages/convex-vue"
+  },
   "files": [
     "dist"
   ],
