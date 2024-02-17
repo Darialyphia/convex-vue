@@ -10,8 +10,8 @@ hero:
       text: Markdown Examples
       link: /markdown-examples
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Exemple
+      link: https://github.com/loicpennequin/convex-vue/tree/master/packages/convex-vue/playground
 
 features:
   - title: Composables
