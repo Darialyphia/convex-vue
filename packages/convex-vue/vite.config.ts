@@ -13,7 +13,7 @@ export default defineConfig({
     }),
     ,
     vue(),
-    dts()
+    dts({ rollupTypes: true })
   ],
   resolve: {
     alias: {

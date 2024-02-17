@@ -5,8 +5,9 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/my-lib.umd.cjs",
-  "module": "./dist/my-lib.js",
+  "main": "./dist/convex-vue.umd.cjs",
+  "module": "./dist/convex-vue.js",
+  "typings": "./dist/types/convex-vue.d.ts",
   "exports": {
     ".": {
       "import": "./dist/convex-vue.js",
@@ -17,7 +18,7 @@
     "dev": "npm-run-all --parallel dev:server dev:client",
     "dev:server": "convex dev",
     "dev:client": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "peerDependencies": {
