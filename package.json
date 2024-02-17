@@ -8,7 +8,9 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "prerelease": "turbo run litn build",
+    "release": "changeset version && changeset publish"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
@@ -20,5 +22,8 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.27.1"
   }
 }
