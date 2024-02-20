@@ -8,16 +8,19 @@
 npm install @convex-vue/core @vueuse/core convex vue-router
 ```
 
-- create the vue plugin
+### Simple example
 
 ```js
-// Simple example
 const convexVue = createConvexVue({
   convexUrl: import.meta.env.VITE_CONVEX_URL
 });
 
 app.use(convexVue);
+```
 
+### Example with auth using auth0
+
+```js
 // Example with auth using auth0
 const auth = createAuth0({
   domain: import.meta.env.VITE_AUTH0_DOMAIN,
@@ -67,28 +70,11 @@ Subscribes to a convex query. It expose a `suspense` function to enable use insi
   import { api } from '../convex/_generated/api';
 
   const { data, isLoading, error, suspense } = useConvexQuery(
-    api.todos.list, // the queery name
-    { completed: true } // query arguments, if no arguments you need to pass an empty object
-  );
-
-  await suspense(); // id used, must be called as a child of <Suspense/> component
-</script>
-```
-
-### useConvexQuery
-
-Subscribes to a convex query. It expose a `suspense` function to enable use inside a `<Suspense />` boundary.
-
-```html
-<script setup lang="ts">
-  import { api } from '../convex/_generated/api';
-
-  const { data, isLoading, error, suspense } = useConvexQuery(
     api.todos.list, // the query name
     { completed: true } // query arguments, if no arguments you need to pass an empty object. It can be ref
   );
 
-  await suspense(); // id used, must be called as a child of <Suspense/> component
+  await suspense(); // if used, must be called as a child of <Suspense/> component
 </script>
 ```
 
@@ -117,7 +103,7 @@ Subscribes to a convex query and handles pagination. It expose a `suspense` func
     { numItems: 50 } // the number of items per page
   );
 
-  await suspense(); // id used, must be called as a child of <Suspense/> component
+  await suspense(); // if used, must be called as a child of <Suspense/> component
 </script>
 ```
 
@@ -171,7 +157,7 @@ Convex-vue exposes some helpers components to use queries. This can be useful if
 
 ### <ConvexQuery />
 
-```js
+```jsx
 <ConvexQuery :query="api.todos.list" :args="{}">
   <template #loading>Loading todos...</template>
 
@@ -191,7 +177,7 @@ Convex-vue exposes some helpers components to use queries. This can be useful if
 
 ### <ConvexPaginatedQuery />
 
-```js
+```jsx
  <ConvexPaginatedQuery
   :query="api.todos.paginatedList"
   :args="{}"
