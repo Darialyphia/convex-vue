@@ -19,7 +19,7 @@
   ],
   "main": "./dist/convex-vue.umd.cjs",
   "module": "./dist/convex-vue.js",
-  "typings": "./dist/types/convex-vue.d.ts",
+  "typings": "./dist/convex-vue.d.ts",
   "exports": {
     ".": {
       "import": "./dist/convex-vue.js",
