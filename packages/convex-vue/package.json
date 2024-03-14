@@ -2,10 +2,16 @@
   "name": "@convex-vue/core",
   "version": "0.0.2",
   "description": "Vue integration for Convex",
+  "keywords": [
+    "convex",
+    "vue"
+  ],
+  "homepage": "https://github.com/loicpennequin/convex-vue",
+  "license": "MIT",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/loicpennequin/create-v3-app.git",
+    "url": "https://github.com/loicpennequin/convex-vue.git",
     "directory": "packages/convex-vue"
   },
   "files": [
