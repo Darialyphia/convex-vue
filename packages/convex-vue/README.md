@@ -11,6 +11,8 @@ npm install @convex-vue/core @vueuse/core convex vue-router
 ### Simple example
 
 ```js
+import { createConvexVue } from "@convex-vue/core";
+
 const convexVue = createConvexVue({
   convexUrl: import.meta.env.VITE_CONVEX_URL
 });
@@ -21,6 +23,8 @@ app.use(convexVue);
 ### Example with auth using auth0
 
 ```js
+import { createConvexVue } from "@convex-vue/core";
+
 // Example with auth using auth0
 const auth = createAuth0({
   domain: import.meta.env.VITE_AUTH0_DOMAIN,
@@ -68,6 +72,7 @@ Subscribes to a convex query. It expose a `suspense` function to enable use insi
 ```html
 <script setup lang="ts">
   import { api } from '../convex/_generated/api';
+  import { useConvexQuery } from "@convex-vue/core";
 
   const { data, isLoading, error, suspense } = useConvexQuery(
     api.todos.list, // the query name
@@ -85,6 +90,7 @@ Subscribes to a convex query and handles pagination. It expose a `suspense` func
 ```html
 <script setup lang="ts">
   import { api } from '../convex/_generated/api';
+  import { useConvexPaginatedQuery } from "@convex-vue/core";
 
   const {
     data,
@@ -112,6 +118,8 @@ Subscribes to a convex query and handles pagination. It expose a `suspense` func
 Handles convex mutations. Optimistic updates are supported.
 
 ```js
+import { useConvexMutation } from "@convex-vue/core";
+
 const { isLoading, error, mutate: addTodo } = useConvexMutation(api.todos.add, {
   onSuccess() {
     todo.value = '';
@@ -141,6 +149,8 @@ const { isLoading, error, mutate: addTodo } = useConvexMutation(api.todos.add, {
 Handles convex actions.
 
 ```js
+import { useConvexAction } from "@convex-vue/core";
+
 const { isLoading, error, mutate } = useConvexAction(api.some.action, {
   onSuccess(result) {
     console.log(result);
