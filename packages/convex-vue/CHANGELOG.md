@@ -1,5 +1,11 @@
 # @convex-vue/core
 
+## 0.0.4
+
+### Patch Changes
+
+- 4df0119: put @auth0/auth0-vue in devdependencies - fixes #9
+
 ## 0.0.3
 
 ### Patch Changes
