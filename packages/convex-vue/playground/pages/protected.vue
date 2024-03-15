@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { definePage } from 'vue-router/auto';
-import EnsureAuthenticated from '@/components/EnsureAuthenticated.vue';
+import EnsureAuthenticated from '../EnsureAuthenticated.vue';
 
 definePage({
   name: 'Protected'

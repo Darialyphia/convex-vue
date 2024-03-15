@@ -34,7 +34,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@auth0/auth0-vue": "^2.3.3",
     "@vueuse/core": "^10.7.1",
     "convex": "^1.7.1",
     "vue": "^3.3.11",
@@ -43,6 +42,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.5.2",
     "npm-run-all": "^4.1.5",
+    "@auth0/auth0-vue": "^2.3.3",
     "open-props": "^1.6.17",
     "prettier": "^3.1.1",
     "typescript": "^5.2.2",
