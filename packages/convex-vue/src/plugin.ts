@@ -23,9 +23,14 @@ type NavigationGuardOptions =
 
 type RouteLoaderMap = Record<string, TypedRouteLoader<AnyRouteLoader>>;
 
-export type ConvexVuePluginOptions = {
-  convexUrl: string;
-  clientOptions?: ConvexClientOptions;
+type ConvexVueClientOptions =
+  | { client: ConvexVueClient }
+  | {
+      convexUrl: string;
+      clientOptions?: ConvexClientOptions;
+    };
+
+export type ConvexVuePluginOptions = ConvexVueClientOptions & {
   auth?: {
     getToken(opts: { forceRefreshToken: boolean }): Promise<Nullable<string>>;
     isAuthenticated: Ref<boolean>;
@@ -47,14 +52,17 @@ export const CONVEX_AUTH_INJECTION_KEY = Symbol('convex-auth') as InjectionKey<{
 }>;
 
 export const createConvexVue = ({
-  clientOptions,
-  convexUrl,
   auth,
-  routeLoaderMap
+  routeLoaderMap,
+  ...options
 }: ConvexVuePluginOptions): Plugin => {
   return {
     install(app) {
-      const client = new ConvexVueClient(convexUrl, clientOptions);
+      const client =
+        'client' in options
+          ? options.client
+          : new ConvexVueClient(options.convexUrl, options.clientOptions);
+
       app.provide(CONVEX_INJECTION_KEY, client);
       app.config.globalProperties.$convex = client;
 

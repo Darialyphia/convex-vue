@@ -1,9 +1,11 @@
 import type { InjectionKey, Ref } from 'vue';
-import { ConvexClientWithSSR } from './composables/convexClientSSR';
+
 import { defineNuxtPlugin } from '#app';
 import { createConvexVue } from '@convex-vue/core';
 
-export const CONVEX_CLIENT = Symbol('convex-client') as InjectionKey<ConvexClientWithSSR>;
+export const CONVEX_CLIENT = Symbol('convex-client') as InjectionKey<
+  typeof ConvexClientWithSSR
+>;
 export const CONVEX_AUTH = Symbol('convex-auth') as InjectionKey<{
   isAuthenticated: Ref<boolean>;
   isLoading: Ref<boolean>;
@@ -13,8 +15,7 @@ export const CONVEX_AUTH = Symbol('convex-auth') as InjectionKey<{
 export default defineNuxtPlugin(async nuxt => {
   const config = useRuntimeConfig();
 
-  const convexClient = new ConvexClientWithSSR((config.public.convex as any).url);
+  const convexClient = new ConvexClientWithSSR(config.public.convexUrl);
 
-  const cv = createConvexVue({ client: convexClient });
-  cv.install!(nuxt.vueApp);
+  nuxt.vueApp.use(createConvexVue({ client: convexClient }));
 });

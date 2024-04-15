@@ -4,6 +4,8 @@ export * from './composables/useQuery';
 export * from './composables/useMutation';
 export * from './composables/usePaginatedQuery';
 export * from './composables/useRouteLoader';
+export * from './composables/useConvex';
 export { default as ConvexQuery } from './components/ConvexQuery.vue';
 export { default as ConvexPaginatedQuery } from './components/ConvexPaginatedQuery.vue';
 export { default as ConvexLink } from './components/ConvexLink.vue';
+export { ConvexVueClient } from './client';

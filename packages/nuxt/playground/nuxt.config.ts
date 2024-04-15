@@ -1,5 +1,9 @@
 export default defineNuxtConfig({
   modules: ['../src/module'],
-  myModule: {},
-  devtools: { enabled: true }
-})
+  devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      convexUrl: ''
+    }
+  }
+});
