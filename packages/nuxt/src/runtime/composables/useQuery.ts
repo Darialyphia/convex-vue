@@ -20,10 +20,11 @@ import { isDefined, type Nullable } from '../utils';
 import type { ConvexClientWithSSR } from './convexClientSSR';
 
 type QueryReference = FunctionReference<'query'>;
+export type NuxtUseConvexQueryOptions = UseConvexQueryOptions & { ssr?: boolean };
 export const useConvexQuery = <Query extends QueryReference>(
   query: Query,
   args: MaybeRefOrGetter<FunctionArgs<Query>>,
-  options: UseConvexQueryOptions & { ssr: boolean } = { ssr: true, enabled: true }
+  options: NuxtUseConvexQueryOptions = { ssr: true, enabled: true }
 ) => {
   const client = useConvex();
   const nuxt = useNuxtApp();

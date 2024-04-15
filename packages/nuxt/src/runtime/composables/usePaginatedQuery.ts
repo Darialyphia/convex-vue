@@ -8,7 +8,7 @@ import {
 } from 'convex/server';
 import { type MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from 'vue';
 import type { Prettify, DistributiveOmit, Nullable } from '../types';
-import { useConvex } from '@convex-vue/core';
+import { useConvex, type UseConvexPaginatedQueryOptions } from '@convex-vue/core';
 import { ConvexClientWithSSR, onServerPrefetch, useState } from '#imports';
 import { isDefined } from '../utils';
 
@@ -33,11 +33,13 @@ const isRecoverableError = (err: Error) => {
   );
 };
 
-export type UseConvexPaginatedQueryOptions = { numItems: number };
+export type NuxtUseConvexPaginatedQueryOptions = UseConvexPaginatedQueryOptions & {
+  ssr?: boolean;
+};
 export const useConvexPaginatedQuery = <T>(
   query: PaginatedQueryReference<T>,
   args: MaybeRefOrGetter<PaginatedQueryArgs<T, PaginatedQueryReference<T>>>,
-  { numItems, ssr = true }: { numItems: number; ssr?: boolean }
+  { numItems, ssr = true }: NuxtUseConvexPaginatedQueryOptions & { ssr?: boolean }
 ) => {
   type PageType = FunctionReturnType<PaginatedQueryReference<T>>;
   const client = useConvex();
