@@ -37,7 +37,7 @@ const preload = () => {
   });
 };
 
-const onMouseEnter = () => {
+const schedulePreload = () => {
   if (props.prefetch === false) return;
 
   timeout = setTimeout(() => {
@@ -45,7 +45,7 @@ const onMouseEnter = () => {
   }, props.prefetchTimeout);
 };
 
-const onMouseLeave = () => {
+const cancelPreload = () => {
   if (!props.prefetch) return;
   clearTimeout(timeout);
 };
@@ -63,7 +63,13 @@ const linkProps = computed(() => {
 </script>
 
 <template>
-  <router-link v-bind="linkProps" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+  <router-link
+    v-bind="linkProps"
+    @mouseenter="schedulePreload"
+    @mouseleave="cancelPreload"
+    @focus="schedulePreload"
+    @blur="cancelPreload"
+  >
     <slot />
   </router-link>
 </template>

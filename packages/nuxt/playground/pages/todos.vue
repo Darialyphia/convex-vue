@@ -54,6 +54,8 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
     ]);
   }
 });
+
+const q = computed(() => api.todos.paginatedList);
 </script>
 
 <template>
@@ -76,11 +78,7 @@ const { mutate: addTodo } = useConvexMutation(api.todos.add, {
 
     <section>
       <h2>Using PaginatedQuery component</h2>
-      <ConvexPaginatedQuery
-        :query="api.todos.paginatedList"
-        :args="{}"
-        :options="{ numItems: 5 }"
-      >
+      <ConvexPaginatedQuery :query="q" :args="{}" :options="{ numItems: 5 }">
         <template #loading>Loading todos...</template>
         <template #default="{ data: todos, isDone, loadMore, isLoadingMore, reset }">
           <ul>

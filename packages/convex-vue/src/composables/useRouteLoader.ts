@@ -60,7 +60,7 @@ export const useRouteLoader = <
 
   if (!isObject(loader)) {
     throw new Error(
-      `Convex route moader needs to be an object, received ${typeof loader} instead.`
+      `Convex route loader needs to be an object, received ${typeof loader} instead.`
     );
   }
 

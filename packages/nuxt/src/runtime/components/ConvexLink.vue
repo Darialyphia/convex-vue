@@ -35,7 +35,7 @@ const preload = () => {
   });
 };
 
-const onMouseEnter = () => {
+const schedulePreload = () => {
   if (props.prefetch === false) return;
 
   timeout = setTimeout(() => {
@@ -43,7 +43,7 @@ const onMouseEnter = () => {
   }, props.prefetchTimeout);
 };
 
-const onMouseLeave = () => {
+const cancelPreload = () => {
   if (!props.prefetch) return;
   clearTimeout(timeout);
 };
@@ -53,6 +53,7 @@ onUnmounted(() => {
 });
 
 const linkProps = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { prefetch, prefetchTimeout, ...rest } = props;
 
   // types from unplugin-vue-router freaking out a bit
@@ -61,7 +62,13 @@ const linkProps = computed(() => {
 </script>
 
 <template>
-  <NuxtLink v-bind="linkProps" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+  <NuxtLink
+    v-bind="linkProps"
+    @mouseenter="schedulePreload"
+    @mouseleave="cancelPreload"
+    @focus="schedulePreload"
+    @blur="cancelPreload"
+  >
     <slot />
   </NuxtLink>
 </template>

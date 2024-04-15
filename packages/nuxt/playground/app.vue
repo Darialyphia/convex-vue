@@ -1,43 +1,18 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { api } from './convex/_generated/api';
-import type { Id } from './convex/_generated/dataModel';
-import { useConvexMutation } from '@convex-vue/core';
-// import { useRouteLoader } from '@/composables/useRouteLoader';
-// import { Loaders } from '../loaders';
-
-// const { paginatedTodos } = useRouteLoader<Loaders['Home']>();
-
-const todo = ref('');
-
-const inputRef = ref<HTMLInputElement>();
-
-const { mutate: addTodo } = useConvexMutation(api.todos.add, {
-  onSuccess() {
-    todo.value = '';
-    inputRef.value?.focus();
-  },
-  optimisticUpdate(ctx) {
-    const current = ctx.getQuery(api.todos.list, {});
-    if (!current) return;
-
-    ctx.setQuery(api.todos.list, {}, [
-      {
-        _creationTime: Date.now(),
-        _id: 'optimistic_id' as Id<'todos'>,
-        completed: false,
-        text: 'Some dummy text'
-      },
-      ...current
-    ]);
-  }
-});
-</script>
-
 <template>
   <header>
-    <ConvexLink to="/">Home</ConvexLink>
-    <ConvexLink to="/todos">Todos</ConvexLink>
+    <nav>
+      <ul>
+        <li>
+          <ConvexLink to="/">Home</ConvexLink>
+        </li>
+        <li>
+          <ConvexLink to="/todos">Todos</ConvexLink>
+        </li>
+        <li>
+          <NuxtLink to="/todos">Todos (no prefetching)</NuxtLink>
+        </li>
+      </ul>
+    </nav>
   </header>
   <main>
     <NuxtPage />
@@ -71,5 +46,23 @@ body {
 
 button {
   --_bg-light: var(--surface-3);
+}
+
+#__nuxt {
+  > header ul {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: var(--size-3);
+    > li {
+      padding: 0;
+
+      > a,
+      a:hover,
+      a:visited {
+        color: inherit;
+      }
+    }
+  }
 }
 </style>

@@ -31,6 +31,10 @@ export default defineNuxtModule<ModuleOptions>({
       {
         from: '@convex-vue/core',
         name: 'useMutation'
+      },
+      {
+        from: '@convex-vue/core',
+        name: 'useRouteLoader'
       }
     ]);
     addImportsDir(resolver.resolve('./runtime/composables'));

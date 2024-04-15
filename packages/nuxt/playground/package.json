@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "nuxt": "latest"
+  },
+  "dependencies": {
+    "vue-clerk": "^0.2.2"
   }
 }

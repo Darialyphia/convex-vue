@@ -1,21 +1,43 @@
-import type { InjectionKey, Ref } from 'vue';
-
 import { defineNuxtPlugin } from '#app';
 import { createConvexVue } from '@convex-vue/core';
-
-export const CONVEX_CLIENT = Symbol('convex-client') as InjectionKey<
-  typeof ConvexClientWithSSR
->;
-export const CONVEX_AUTH = Symbol('convex-auth') as InjectionKey<{
-  isAuthenticated: Ref<boolean>;
-  isLoading: Ref<boolean>;
-  getToken(): Promise<string | null>;
-}>;
+import type { Resources, Clerk } from '@clerk/types';
 
 export default defineNuxtPlugin(async nuxt => {
   const config = useRuntimeConfig();
 
-  const convexClient = new ConvexClientWithSSR(config.public.convexUrl);
+  if (nuxt.ssrContext) {
+    console.log(nuxt.ssrContext.event.context.auth);
+  }
 
-  nuxt.vueApp.use(createConvexVue({ client: convexClient }));
+  const authState: { isLoading: Ref<boolean>; session: Ref<Resources['session']> } = {
+    isLoading: ref(true),
+    session: ref(undefined)
+  };
+
+  (nuxt.vueApp.config.globalProperties.$clerk as Clerk).addListener(arg => {
+    authState.isLoading.value = false;
+    authState.session.value = arg.session;
+  });
+
+  const convexClient = new ConvexClientWithSSR(config.public.convexUrl as string);
+
+  nuxt.vueApp.use(
+    createConvexVue({
+      client: convexClient
+      // auth: {
+      //   isAuthenticated: computed(() => !!authState.session.value),
+      //   isLoading: authState.isLoading,
+      //   getToken: async ({ forceRefreshToken }) => {
+      //     try {
+      //       return await authState.session.value?.getToken({
+      //         template: 'convex',
+      //         skipCache: forceRefreshToken
+      //       });
+      //     } catch (error) {
+      //       return null;
+      //     }
+      //   }
+      // }
+    })
+  );
 });
