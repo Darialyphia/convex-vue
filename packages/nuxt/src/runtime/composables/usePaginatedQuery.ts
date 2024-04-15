@@ -9,7 +9,7 @@ import {
 import { type MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from 'vue';
 import type { Prettify, DistributiveOmit, Nullable } from '../types';
 import { useConvex, type UseConvexPaginatedQueryOptions } from '@convex-vue/core';
-import { ConvexClientWithSSR, onServerPrefetch, useState } from '#imports';
+import { ConvexClientWithSSR, onServerPrefetch, useNuxtApp, useState } from '#imports';
 import { isDefined } from '../utils';
 
 export type PaginatedQueryReference<T> = FunctionReference<
@@ -76,8 +76,9 @@ export const useConvexPaginatedQuery = <T>(
   let shouldIgnoreNullUpdates = isDefined(pages.value[0]);
 
   const loadPage = (index: number) => {
+    console.log('load');
     subscribers.value[index]?.();
-    if (pages.value.length) {
+    if (pages.value.length && index > 0) {
       isLoadingMore.value = true;
     }
     subscribers.value[index] = client.onUpdate(
@@ -119,7 +120,10 @@ export const useConvexPaginatedQuery = <T>(
     if (hasChanged) reset(true);
   });
 
-  loadPage(0);
+  const nuxt = useNuxtApp();
+  if (!nuxt.ssrContext) {
+    loadPage(0);
+  }
 
   onServerPrefetch(async () => {
     if (ssr) {
