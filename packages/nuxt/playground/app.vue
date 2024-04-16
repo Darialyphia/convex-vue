@@ -2,6 +2,7 @@
 import { useUser, SignOutButton } from 'vue-clerk';
 
 const { user } = useUser();
+const router = useRouter();
 </script>
 
 <template>
@@ -22,7 +23,7 @@ const { user } = useUser();
 
     <div v-if="user">
       {{ user.username }}
-      <SignOutButton />
+      <SignOutButton @sign-out="router.push('/')" />
     </div>
   </header>
   <main>

@@ -26,13 +26,8 @@ definePageMeta({
     }
   })
 });
-// import { useRouteLoader } from '@/composables/useRouteLoader';
-// import { Loaders } from '../loaders';
-
-// const { paginatedTodos } = useRouteLoader<Loaders['Home']>();
 
 const todo = ref('');
-
 const inputRef = ref<HTMLInputElement>();
 
 const { mutate: addTodo } = useConvexMutation(api.todos.add, {

@@ -1,6 +1,5 @@
 import { defineNuxtPlugin } from '#app';
 import { createConvexVue } from '@convex-vue/core';
-import type { Resources, Clerk } from '@clerk/types';
 import { useAuth, useClerkProvide } from 'vue-clerk';
 
 import type { Ref } from 'vue';
@@ -31,26 +30,24 @@ export default defineNuxtPlugin(async nuxt => {
     });
   }
 
-  const convexClient = new ConvexVueClientWithSSR(config.public.convexUrl as string);
-
   nuxt.vueApp.use(
     createConvexVue({
-      client: convexClient,
+      client: new ConvexVueClientWithSSR(config.public.convexUrl as string),
       // @ts-expect-error weird type error that seems to be caused by nuxt playground
       auth: {
         ...authState,
         getToken: async ({ forceRefreshToken }) => {
           try {
             if (process.server) {
-              return nuxt.ssrContext?.event.context.auth.getToken({
-                template: 'convex'
-              });
-            } else {
-              const token = await getToken.value({
+              return await nuxt.ssrContext?.event.context.auth.getToken({
                 template: 'convex',
                 skipCache: forceRefreshToken
               });
-              return token;
+            } else {
+              return await getToken.value({
+                template: 'convex',
+                skipCache: forceRefreshToken
+              });
             }
           } catch (error) {
             return null;
