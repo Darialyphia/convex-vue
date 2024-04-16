@@ -14,7 +14,7 @@ type AuthTokenFetcher = (args: {
 
 type QueryReference = FunctionReference<'query'>;
 
-export class ConvexClientWithSSR extends ConvexVueClient {
+export class ConvexVueClientWithSSR extends ConvexVueClient {
   private httpClient: ConvexHttpClient;
   private authTokenFetcher?: AuthTokenFetcher;
   private ssrAuthToken?: string | null;

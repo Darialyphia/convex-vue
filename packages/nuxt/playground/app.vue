@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import { useUser, SignOutButton } from 'vue-clerk';
+
+const { user } = useUser();
+</script>
+
 <template>
   <header>
     <nav>
@@ -13,6 +19,11 @@
         </li>
       </ul>
     </nav>
+
+    <div v-if="user">
+      {{ user.username }}
+      <SignOutButton />
+    </div>
   </header>
   <main>
     <NuxtPage />
@@ -49,18 +60,24 @@ button {
 }
 
 #__nuxt {
-  > header ul {
-    padding: 0;
-    list-style: none;
+  > header {
     display: flex;
-    gap: var(--size-3);
-    > li {
-      padding: 0;
+    justify-content: space-between;
 
-      > a,
-      a:hover,
-      a:visited {
-        color: inherit;
+    ul {
+      padding: 0;
+      list-style: none;
+      display: flex;
+      gap: var(--size-3);
+
+      > li {
+        padding: 0;
+
+        > a,
+        a:hover,
+        a:visited {
+          color: inherit;
+        }
       }
     }
   }
