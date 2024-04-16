@@ -11,6 +11,8 @@
     "nuxt": "latest"
   },
   "dependencies": {
+    "@vueuse/nuxt": "^10.9.0",
+    "h3-clerk": "^0.3.10",
     "vue-clerk": "^0.2.2"
   }
 }

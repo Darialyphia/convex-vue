@@ -1,5 +1,13 @@
-<template>
-  <h1>Home</h1>
-</template>
+<script setup lang="ts">
+import { SignIn } from 'vue-clerk';
 
-<style scoped lang="postcss"></style>
+definePageMeta({
+  name: 'Login'
+});
+</script>
+
+<template>
+  <div>
+    <SignIn after-sign-in-url="/todos" />
+  </div>
+</template>

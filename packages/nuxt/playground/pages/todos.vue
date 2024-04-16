@@ -5,6 +5,7 @@ import type { Id } from '../convex/_generated/dataModel';
 import { defineRouteLoader, useConvexMutation } from '@convex-vue/core';
 
 definePageMeta({
+  middleware: ['auth'],
   loader: defineRouteLoader({
     todos: {
       query: api.todos.list,
