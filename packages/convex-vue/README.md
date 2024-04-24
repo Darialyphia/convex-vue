@@ -4,71 +4,30 @@
 
 1. Install the package and its peer dependencies
 
-```bash
-npm install @convex-vue/core @vueuse/core convex vue-router
-```
+    ```bash
+    npm install @convex-vue/core @vueuse/core convex
+    ```
 
 2. Add the ConvexVue plugin to your Vue app
 
-```js
-import { createConvexVue } from "@convex-vue/core";
+    ```js
+    import { createConvexVue } from "@convex-vue/core";
 
-const convexVue = createConvexVue({
-  convexUrl: import.meta.env.VITE_CONVEX_URL
-});
+    const convexVue = createConvexVue({
+      convexUrl: import.meta.env.VITE_CONVEX_URL
+    });
 
-app.use(convexVue);
-```
+    app.use(convexVue);
+    ```
 
-### Example with auth using auth0
-
-```js
-import { createConvexVue } from "@convex-vue/core";
-
-// Example with auth using auth0
-const auth = createAuth0({
-  domain: import.meta.env.VITE_AUTH0_DOMAIN,
-  clientId: import.meta.env.VITE_AUTH0_CLIENTID,
-  authorizationParams: {
-    redirect_uri: window.location.origin
-  }
-});
-
-const convexVue = createConvexVue({
-  convexUrl: import.meta.env.VITE_CONVEX_URL,
-  auth: {
-    isAuthenticated: auth.isAuthenticated,
-    isLoading: auth.isLoading,
-    getToken: async ({ forceRefreshToken }) => {
-      try {
-        const response = await auth.getAccessTokenSilently({
-          detailedResponse: true,
-          cacheMode: forceRefreshToken ? 'off' : 'on'
-        });
-        return response.id_token;
-      } catch (error) {
-        return null;
-      }
-    },
-    installNavigationGuard: true,
-    needsAuth: to => to.meta.needsAuth
-    redirectTo: () => ({
-      name: 'Login'
-    })
-  }
-});
-
-app.use(convexVue);
-```
-
-- You can now use the convex-vue composables and components in your app 😊
+3. You can now use the convex-vue composables and components in your app 😊
 
 ## Composables
 
-### useConvex
+### `useConvex`
 
-Returns the [`ConvexClient`](https://docs.convex.dev/api/classes/browser.ConvexClient) instance to
-enable one-off queries and other custom functionality.
+Returns the [`ConvexClient`](https://docs.convex.dev/api/classes/browser.ConvexClient) instance
+to enable one-off queries and other custom functionality.
 
 ```html
 <script setup lang="ts">
@@ -76,13 +35,14 @@ enable one-off queries and other custom functionality.
   import { useConvex } from "@convex-vue/core";
 
   const convex = useConvex(); // instance of `ConvexClient`
-  const data = convex.query(api.todos.list, {}) // query once, no subscription
+  const data = convex.query(api.todos.list, {}); // query once, no subscription
 </script>
 ```
 
-### useConvexQuery
+### `useConvexQuery`
 
-Subscribes to a convex query. It expose a `suspense` function to enable use inside a `<Suspense />` boundary.
+Subscribes to a [Convex Query](https://docs.convex.dev/functions/query-functions). It exposes a
+`suspense` function to enable use inside a `<Suspense />` boundary.
 
 ```html
 <script setup lang="ts">
@@ -98,9 +58,11 @@ Subscribes to a convex query. It expose a `suspense` function to enable use insi
 </script>
 ```
 
-### useConvexPaginatedQuery
+### `useConvexPaginatedQuery`
 
-Subscribes to a convex query and handles pagination. It expose a `suspense` function to enable use inside a `<Suspense />` boundary that will load the first page.
+Subscribes to a [Convex Paginated Query](https://docs.convex.dev/database/pagination). It
+exposes a `suspense` function to enable use inside a `<Suspense />` boundary that will load
+the first page.
 
 ```html
 <script setup lang="ts">
@@ -128,9 +90,10 @@ Subscribes to a convex query and handles pagination. It expose a `suspense` func
 </script>
 ```
 
-### useConvexMutation
+### `useConvexMutation`
 
-Handles convex mutations. Optimistic updates are supported.
+Handles [Convex Mutations](https://docs.convex.dev/functions/mutation-functions). Optimistic
+updates are supported.
 
 ```js
 import { useConvexMutation } from "@convex-vue/core";
@@ -159,9 +122,9 @@ const { isLoading, error, mutate: addTodo } = useConvexMutation(api.todos.add, {
 });
 ```
 
-### useConvexAction
+### `useConvexAction`
 
-Handles convex actions.
+Handles [Convex Actions](https://docs.convex.dev/functions/actions).
 
 ```js
 import { useConvexAction } from "@convex-vue/core";
@@ -176,9 +139,10 @@ const { isLoading, error, mutate } = useConvexAction(api.some.action, {
 });
 ```
 
-### Components
+## Components
 
-Convex-vue exposes some helpers components to use queries. This can be useful if you solely need it's data in your component templates
+convex-vue exposes helper components to use queries. This can be useful if you solely
+need its data in your component templates.
 
 ### <ConvexQuery />
 
@@ -230,69 +194,123 @@ Convex-vue exposes some helpers components to use queries. This can be useful if
 </ConvexPaginatedQuery>
 ```
 
-## 🧪 Route Loaders (experimental)
+## Examples
 
-Taking inspiration from [Remix's route loaders ](https://remix.run/docs/en/main/route/loader), Convex-vue introduces a mechanism to specify which data a route needs. The data will then start fetching when navigating, before loading the javascript for the page and mouting its component. Under the hood, this fires a Convex client subscription so that, hopefully, by the time the page mounts, the convex client cache will already have the data, or , at least, the request wil lalready be in flight.
+### Example with auth using [auth0](https://auth0.com/)
 
-You need to use vue-router to use this feature.
+```js
+import { createConvexVue } from "@convex-vue/core";
 
-- First, define a route loader map liek below.
-
-```ts
-import { api } from '@api';
-import { defineRouteLoader } from '@convex-vue/core';
-
-// defineRouteLoader will provide you with type safety
-export const loaders = {
-  Home: defineRouteLoader({
-    todos: {
-      query: api.todos.list,
-      args() {
-        return {};
-      }
-    }
-  }),
-
-  TodoDetails: defineRouteLoader({
-    todo: {
-      query: api.todos.byId,
-      args(route) {
-        return {
-          id: route.params.id as Id<'Todos'>
-        };
-      }
-    }
-  })
-};
-
-export type Loaders = typeof loaders;
-```
-
-- Then, pass the rotue loader map to the convex-vue plugin
-
-```ts
-import { loaders } from './loaders';
+// Example with auth using auth0
+const auth = createAuth0({
+  domain: import.meta.env.VITE_AUTH0_DOMAIN,
+  clientId: import.meta.env.VITE_AUTH0_CLIENTID,
+  authorizationParams: {
+    redirect_uri: window.location.origin
+  }
+});
 
 const convexVue = createConvexVue({
   convexUrl: import.meta.env.VITE_CONVEX_URL,
-  routeLoaderMap: loaders
+  auth: {
+    isAuthenticated: auth.isAuthenticated,
+    isLoading: auth.isLoading,
+    getToken: async ({ forceRefreshToken }) => {
+      try {
+        const response = await auth.getAccessTokenSilently({
+          detailedResponse: true,
+          cacheMode: forceRefreshToken ? 'off' : 'on'
+        });
+        return response.id_token;
+      } catch (error) {
+        return null;
+      }
+    },
+    installNavigationGuard: true,
+    needsAuth: to => to.meta.needsAuth
+    redirectTo: () => ({
+      name: 'Login'
+    })
+  }
 });
 
 app.use(convexVue);
 ```
 
-- That's it ! Now, when navigating to a page, convex-vue will look in your loader map and search for a loader corresponding to the `name` property of the route. Alternatively, you can provide a `loader` property in your routes `meta`, andit will be used instead.
+## 🧪 Route Loaders (experimental)
 
-- You can also use the `useRouteLoader` to get akk the data for one loader in one go, instead of using multiple instances of `useConvexQuery` or `useConvexPaginatedQuery`.
+Taking inspiration from [Remix's route loaders ](https://remix.run/docs/en/main/route/loader), convex-vue
+introduces a mechanism to specify which data a route needs. The data will then start fetching when
+navigating, before loading the javascript for the page and mouting its component. Under the hood, this
+fires a Convex client subscription so that, hopefully, by the time the page mounts, the convex client
+cache will already have the data, or , at least, the request wil lalready be in flight.
 
-```ts
-const { todos } = useRouteLoader<Loaders['Home']>();
-```
+You need to use [vue-router](https://www.npmjs.com/package/vue-router) to use this feature.
+
+1. Define a route loader map like the following:
+
+   ```ts
+   import { api } from '@api';
+   import { defineRouteLoader } from '@convex-vue/core';
+
+   // defineRouteLoader will provide you with type safety
+   export const loaders = {
+     Home: defineRouteLoader({
+       todos: {
+        query: api.todos.list,
+         args() {
+           return {};
+         }
+       }
+     }),
+
+    TodoDetails: defineRouteLoader({
+       todo: {
+         query: api.todos.byId,
+         args(route) {
+           return {
+             id: route.params.id as Id<'Todos'>
+           };
+         }
+       }
+     })
+   };
+
+   export type Loaders = typeof loaders;
+   ```
+
+2. Pass the route loader map to the convex-vue plugin
+
+   ```ts
+   import { loaders } from './loaders';
+
+   const convexVue = createConvexVue({
+     convexUrl: import.meta.env.VITE_CONVEX_URL,
+     routeLoaderMap: loaders
+   });
+
+   app.use(convexVue);
+   ```
+
+3. That's it! Now, when navigating to a page, convex-vue will look in your loader map
+   and search for a loader corresponding to the `name` property of the route.
+   Alternatively, you can provide a `loader` property in your routes `meta`, and it will
+   be used instead.
+
+   - You can instead use the `useRouteLoader` to get all the data for one loader in one go,
+     rather than using multiple instances of `useConvexQuery` or `useConvexPaginatedQuery`.
+
+     ```ts
+     const { todos } = useRouteLoader<Loaders['Home']>();
+     ```
 
 ⚠️ Due to the way vue-router's route matching works, you will get the data for **ALL** the matched routes when using nested routes. Be wary of naming conflicts !
 
-- A `<ConvexLink />` component is also available. It just wraps vue-router's `<RouterLink />` and will prefetch its target loader on hover. The component accepts a `prefetchTimeout` prop to set how long the link should be hovered in order to start prefetching
+- A `<ConvexLink />` component is also available. It wraps vue-router's `<RouterLink />` and
+  prefetches its target loader on hover. The component accepts a `prefetchTimeout` prop
+  to set how long the link should be hovered in order to start prefetching
 
-```js
-<ConvexLink :to="{ name: 'Home' }">Todos</ConvexLink>
-```
+   ```js
+   <ConvexLink :to="{ name: 'Home' }">Todos</ConvexLink>
+   ```
+
