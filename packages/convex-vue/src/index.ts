@@ -1,5 +1,6 @@
 export * from './plugin';
 export * from './composables/useAction';
+export * from './composables/useConvex';
 export * from './composables/useQuery';
 export * from './composables/useMutation';
 export * from './composables/usePaginatedQuery';

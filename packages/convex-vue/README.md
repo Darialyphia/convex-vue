@@ -2,13 +2,13 @@
 
 ## Get Started
 
-- Install the package and its peer dependencies
+1. Install the package and its peer dependencies
 
 ```bash
 npm install @convex-vue/core @vueuse/core convex vue-router
 ```
 
-### Simple example
+2. Add the ConvexVue plugin to your Vue app
 
 ```js
 import { createConvexVue } from "@convex-vue/core";
@@ -64,6 +64,21 @@ app.use(convexVue);
 - You can now use the convex-vue composables and components in your app 😊
 
 ## Composables
+
+### useConvex
+
+Returns the [`ConvexClient`](https://docs.convex.dev/api/classes/browser.ConvexClient) instance to
+enable one-off queries and other custom functionality.
+
+```html
+<script setup lang="ts">
+  import { api } from '../convex/_generated/api';
+  import { useConvex } from "@convex-vue/core";
+
+  const convex = useConvex(); // instance of `ConvexClient`
+  const data = convex.query(api.todos.list, {}) // query once, no subscription
+</script>
+```
 
 ### useConvexQuery
 
