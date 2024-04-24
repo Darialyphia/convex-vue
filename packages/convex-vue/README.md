@@ -237,6 +237,47 @@ const convexVue = createConvexVue({
 app.use(convexVue);
 ```
 
+### Example with auth using [Clerk](https://clerk.com/)
+
+```ts
+import { Ref, computed, createApp, ref } from 'vue';
+import { Resources } from '@clerk/types';
+import { clerkPlugin } from 'vue-clerk/plugin';
+
+const app = createApp(App).use(clerkPlugin, {
+  publishableKey: import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+});
+
+const authState: { isLoading: Ref<boolean>; session: Ref<Resources['session']> } = {
+  isLoading: ref(true),
+  session: ref(undefined)
+};
+app.config.globalProperties.$clerk.addListener(arg => {
+  authState.isLoading.value = false;
+  authState.session.value = arg.session;
+});
+
+const convexVue = createConvexVue({
+  convexUrl: import.meta.env.VITE_CONVEX_URL,
+  auth: {
+    isAuthenticated: computed(() => !!authState.session.value),
+    isLoading: authState.isLoading,
+    getToken: async ({ forceRefreshToken }) => {
+      try {
+        return await authState.session.value?.getToken({
+          template: 'convex',
+          skipCache: forceRefreshToken
+        });
+      } catch (error) {
+        return null;
+      }
+    },
+  }
+});
+
+app.use(convexVue).mount('#app');
+```
+
 ## 🧪 Route Loaders (experimental)
 
 Taking inspiration from [Remix's route loaders ](https://remix.run/docs/en/main/route/loader), convex-vue
