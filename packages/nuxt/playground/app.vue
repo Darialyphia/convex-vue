@@ -3,6 +3,7 @@
 
 // const { user } = useUser();
 const router = useRouter();
+const shouldPrefetch = ref(false);
 </script>
 
 <template>
@@ -10,13 +11,13 @@ const router = useRouter();
     <nav>
       <ul>
         <li>
-          <ConvexLink to="/">Home</ConvexLink>
+          <NuxtLink to="/">Home</NuxtLink>
         </li>
         <li>
-          <ConvexLink to="/todos">Todos</ConvexLink>
+          <NuxtLink @mouseover="shouldPrefetch = true" @mouseleave="shouldPrefetch = false" :prefetch="shouldPrefetch" to="/todos">Todos</NuxtLink>
         </li>
         <li>
-          <NuxtLink to="/todos">Todos (no prefetching)</NuxtLink>
+          <NuxtLink no-prefetch to="/todos">Todos (no prefetching)</NuxtLink>
         </li>
       </ul>
     </nav>

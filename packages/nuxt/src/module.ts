@@ -3,7 +3,8 @@ import {
   createResolver,
   addImports,
   addImportsDir,
-  addComponentsDir
+  addComponentsDir,
+  addPlugin
 } from '@nuxt/kit';
 
 // Module options TypeScript interface definition
@@ -39,5 +40,7 @@ export default defineNuxtModule<ModuleOptions>({
     ]);
     addImportsDir(resolver.resolve('./runtime/composables'));
     addComponentsDir({ path: resolver.resolve('./runtime/components') });
+
+    addPlugin(resolver.resolve('./runtime/plugin'))
   }
 });

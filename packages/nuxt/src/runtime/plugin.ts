@@ -16,6 +16,17 @@ export default defineNuxtPlugin(async nuxtApp => {
 
   const cv = createConvexVue({ client: convexClient });
   cv.install!(nuxtApp.vueApp);
+
+  const router = useRouter()
+  nuxtApp.hook('link:prefetch', link => {
+    const route = router.resolve(link)
+    const loader = route?.meta?.loader
+    if (!loader) return
+
+    Object.values(loader).forEach(({ query, args }) => {
+      convexClient.onUpdate(query, args(route), () => {});
+    });
+  })
 });
 
 declare module '#app' {
