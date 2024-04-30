@@ -73,7 +73,7 @@ export const myMutationFunction = mutation({
 Using this mutation function in a React component looks like:
 
 ```ts
-const mutation = useMutation(api.functions.myMutationFunction);
+const mutation = useConvexMutation(api.functions.myMutationFunction);
 function handleButtonPress() {
   // fire and forget, the most common way to use mutations
   mutation({ first: "Hello!", second: "me" });

@@ -9,7 +9,7 @@ import {
 import { type MaybeRefOrGetter, ref, computed, toValue, watch, nextTick } from 'vue';
 import type { Prettify, DistributiveOmit, Nullable } from '../types';
 import { useConvex, type UseConvexPaginatedQueryOptions } from '@convex-vue/core';
-import { ConvexClientWithSSR, onServerPrefetch, useNuxtApp, useState } from '#imports';
+import { ConvexVueClientWithSSR, onServerPrefetch, useNuxtApp, useState } from '#imports';
 import { isDefined } from '../utils';
 
 export type PaginatedQueryReference<T> = FunctionReference<
@@ -128,7 +128,7 @@ export const useConvexPaginatedQuery = <T>(
   onServerPrefetch(async () => {
     if (ssr) {
       try {
-        const page = await (client as ConvexClientWithSSR).querySSR(
+        const page = await (client as ConvexVueClientWithSSR).querySSR(
           query,
           toValue({
             ...toValue(args),
