@@ -7,15 +7,18 @@
     "dev:convex": "convex dev",
     "dev:nuxt": "nuxi dev",
     "build": "nuxi build",
-    "generate": "nuxi generate"
+    "generate": "nuxi generate",
+    "postinstall": "cd .. && npm run dev:prepare"
   },
   "devDependencies": {
     "nuxt": "latest"
   },
   "dependencies": {
+    "@convex-vue/nuxt": "file:../",
     "@vueuse/nuxt": "^10.9.0",
     "convex": "^1.11.2",
     "h3-clerk": "^0.3.10",
+    "typescript": "latest",
     "vue-clerk": "^0.2.2"
   }
 }

@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { NuxtLinkProps } from '#app';
+import type { NuxtLinkProps } from '#app/components/nuxt-link';
 import { useConvex, CONVEX_LOADERS_INJECTION_KEY } from '@convex-vue/core';
 import { computed, inject, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-type Props = NuxtLinkProps & {
-  prefetch?: boolean;
+interface Props extends /* @vue-ignore */ NuxtLinkProps {
   prefetchTimeout?: number;
 };
 

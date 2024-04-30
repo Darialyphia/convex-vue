@@ -30,29 +30,29 @@ export default defineNuxtPlugin(async nuxt => {
   //   });
   // }
 
-  nuxt.vueApp.use(
-    createConvexVue({
-      client: new ConvexVueClientWithSSR(config.public.convexUrl as string)
-      // auth: {
-      //   ...authState,
-      //   getToken: async ({ forceRefreshToken }) => {
-      //     try {
-      //       if (process.server) {
-      //         return await nuxt.ssrContext?.event.context.auth.getToken({
-      //           template: 'convex',
-      //           skipCache: forceRefreshToken
-      //         });
-      //       } else {
-      //         return await getToken.value({
-      //           template: 'convex',
-      //           skipCache: forceRefreshToken
-      //         });
-      //       }
-      //     } catch (error) {
-      //       return null;
-      //     }
-      //   }
-      // }
-    })
-  );
+  // nuxt.vueApp.use(
+  //   createConvexVue({
+  //     client: new ConvexVueClientWithSSR(config.public.convexUrl as string)
+  //     // auth: {
+  //     //   ...authState,
+  //     //   getToken: async ({ forceRefreshToken }) => {
+  //     //     try {
+  //     //       if (process.server) {
+  //     //         return await nuxt.ssrContext?.event.context.auth.getToken({
+  //     //           template: 'convex',
+  //     //           skipCache: forceRefreshToken
+  //     //         });
+  //     //       } else {
+  //     //         return await getToken.value({
+  //     //           template: 'convex',
+  //     //           skipCache: forceRefreshToken
+  //     //         });
+  //     //       }
+  //     //     } catch (error) {
+  //     //       return null;
+  //     //     }
+  //     //   }
+  //     // }
+  //   })
+  // );
 });

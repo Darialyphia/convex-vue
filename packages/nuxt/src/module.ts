@@ -3,7 +3,8 @@ import {
   createResolver,
   addImports,
   addImportsDir,
-  addComponentsDir
+  addComponentsDir,
+  addPlugin
 } from '@nuxt/kit';
 
 // Module options TypeScript interface definition
@@ -11,7 +12,7 @@ export interface ModuleOptions {}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'convex-nuxt',
+    name: '@convex-vue/nuxt',
     configKey: 'convex'
   },
   // Default configuration options of the Nuxt module
@@ -26,18 +27,20 @@ export default defineNuxtModule<ModuleOptions>({
       },
       {
         from: '@convex-vue/core',
-        name: 'useAction'
+        name: 'useConvexAction',
       },
       {
         from: '@convex-vue/core',
-        name: 'useMutation'
+        name: 'useConvexMutation',
       },
       {
         from: '@convex-vue/core',
-        name: 'useRouteLoader'
+        name: 'useConvexRouteLoader',
       }
     ]);
     addImportsDir(resolver.resolve('./runtime/composables'));
     addComponentsDir({ path: resolver.resolve('./runtime/components') });
+
+    addPlugin(resolver.resolve('./runtime/plugin'))
   }
 });

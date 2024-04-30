@@ -25,7 +25,8 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "packages/nuxt/playground"
     ]
   },
   "dependencies": {

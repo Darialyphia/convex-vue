@@ -17,7 +17,7 @@ import {
   type FunctionReturnType
 } from 'convex/server';
 import { isDefined, type Nullable } from '../utils';
-import type { ConvexClientWithSSR } from './convexClientSSR';
+import type { ConvexVueClientWithSSR } from './convexClientSSR';
 
 type QueryReference = FunctionReference<'query'>;
 export type NuxtUseConvexQueryOptions = UseConvexQueryOptions & { ssr?: boolean };
@@ -80,7 +80,7 @@ export const useConvexQuery = <Query extends QueryReference>(
   onServerPrefetch(async () => {
     if (options.ssr) {
       try {
-        data.value = await (client as ConvexClientWithSSR).querySSR(query, toValue(args));
+        data.value = await (client as ConvexVueClientWithSSR).querySSR(query, toValue(args));
       } catch (err) {
         error.value = err as Error;
       }
