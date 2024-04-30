@@ -7,10 +7,6 @@ export const list = query({
     forceError: v.optional(v.boolean())
   },
   handler: (ctx, args) => {
-    console.log('getting todos');
-    if (args.forceError) {
-      throw new Error('forced error !');
-    }
     return ctx.db.query('todos').order('desc').collect();
   }
 });

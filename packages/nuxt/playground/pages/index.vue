@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SignIn } from 'vue-clerk';
+// import { SignIn } from 'vue-clerk';
 
 definePageMeta({
   name: 'Login'
@@ -8,6 +8,6 @@ definePageMeta({
 
 <template>
   <div>
-    <SignIn after-sign-in-url="/todos" />
+    <!-- <SignIn after-sign-in-url="/todos" /> -->
   </div>
 </template>

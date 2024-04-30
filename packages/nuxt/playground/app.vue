@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useUser, SignOutButton } from 'vue-clerk';
+// import { useUser, SignOutButton } from 'vue-clerk';
 
-const { user } = useUser();
+// const { user } = useUser();
 const router = useRouter();
 </script>
 
@@ -20,11 +20,11 @@ const router = useRouter();
         </li>
       </ul>
     </nav>
-
+    <!--
     <div v-if="user">
       {{ user.username }}
       <SignOutButton @sign-out="router.push('/')" />
-    </div>
+    </div> -->
   </header>
   <main>
     <NuxtPage />

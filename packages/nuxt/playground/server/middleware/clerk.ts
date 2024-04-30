@@ -1,3 +1,3 @@
-import { withClerkMiddleware } from 'h3-clerk';
+// import { withClerkMiddleware } from 'h3-clerk';
 
-export default withClerkMiddleware();
+// export default withClerkMiddleware();

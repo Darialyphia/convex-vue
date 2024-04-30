@@ -3,7 +3,9 @@
   "name": "my-module-playground",
   "type": "module",
   "scripts": {
-    "dev": "nuxi dev",
+    "dev": "npm-run-all --parallel dev:convex dev:nuxt",
+    "dev:convex": "convex dev",
+    "dev:nuxt": "nuxi dev",
     "build": "nuxi build",
     "generate": "nuxi generate"
   },
@@ -12,6 +14,7 @@
   },
   "dependencies": {
     "@vueuse/nuxt": "^10.9.0",
+    "convex": "^1.11.2",
     "h3-clerk": "^0.3.10",
     "vue-clerk": "^0.2.2"
   }
