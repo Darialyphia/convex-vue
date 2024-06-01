@@ -252,9 +252,9 @@ const authState: { isLoading: Ref<boolean>; session: Ref<Resources['session']> }
   isLoading: ref(true),
   session: ref(undefined)
 };
-app.config.globalProperties.$clerk.addListener(arg => {
+app.config.globalProperties.$clerk.addListener((resources: Resources) => {
   authState.isLoading.value = false;
-  authState.session.value = arg.session;
+  authState.session.value = resources.session;
 });
 
 const convexVue = createConvexVue({
